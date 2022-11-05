@@ -1,0 +1,35 @@
+.cards-wrapper{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.card-link:hover .card{
+    border-color: #0284c7;
+}
+
+.card{
+    width: 400px;
+    border: 3px dashed #7dd3fc;
+    padding: 16px 12px;
+    border-radius: 12px;
+    margin-bottom: 32px;
+    transition: border-color .2s ease-in-out;
+}
+
+.card-image{
+    width: 100%;
+    border-radius: 6px;
+    margin: 0 auto;
+    display: block;
+    margin-bottom: 32px;
+}
+
+.card-header{
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+
+.card-text{
+    font-size: 16px;
+}
