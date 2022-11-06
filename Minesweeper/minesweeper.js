@@ -4,6 +4,20 @@ const ROWS = 8;
 const COLS = 8;
 const MINES = 20;
 
+function checkBtn(btn, oldText){
+    if (oldText != '💣') {
+        btn.textContent = oldText;
+        btn.style.color = '#0f172a';
+        btn.disabled = true
+    }
+    else{
+        console.log('you losed');
+        btn.textContent = oldText;
+        btn.style.color = '#0f172a';
+        // add showing all buttons text and disable them
+    }
+}
+
 function getRandom(min, max){
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
@@ -11,6 +25,7 @@ function getRandom(min, max){
 function makeBoard (rows, cols, mines, parent){
     let board = document.createElement('div');
     let btnsList = [];
+    let allList = [];
     let minesList = [];
     // creating buttons and rows
     for(let a = 0; a < rows; a++){
@@ -21,9 +36,11 @@ function makeBoard (rows, cols, mines, parent){
             btn.classList.add('btn', 'row'+(a+1), 'col'+( i+1));
             btn.style.width = '60px';
             btn.style.height = '60px';
-            btn.style.fontSize = '16px'
+            btn.style.fontSize = '16px';
+            btn.style.border = '1px solid #0f172a';
             btn.textContent = (a+1) + ' ' + (i+1);
-            btnsList.push(btn)
+            btnsList.push(btn);
+            allList.push(btn);
             row.append(btn);
         }
         board.append(row);
@@ -78,7 +95,30 @@ function makeBoard (rows, cols, mines, parent){
     }
 
     // Making buttons without text and add opening it
+
+    for(let i = 0; i < allList.length; i++){
+        let oldText = allList[i].textContent;
+        allList[i].textContent = '.';
+        allList[i].style.color = '#ffffff';
+        allList[i].addEventListener('click', function(){
+            checkBtn(allList[i], oldText);
+        });
+        allList[i].addEventListener('contextmenu', function(ev){
+            ev.preventDefault();
+            if (allList[i].textContent != '🚩'){
+                allList[i].textContent = '🚩';
+            }
+            else if (allList[i].textContent === '🚩'){
+                allList[i].textContent = '.';
+            }
+            return false;
+        });
+    }
+
+    
     
 }
+
+
 
 makeBoard(ROWS,COLS,MINES,GAME)
