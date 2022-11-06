@@ -50,144 +50,28 @@ function makeBoard (rows, cols, mines, parent){
         for (let i = 0; i < 2; i++){
             btnCoordinates[i] = parseInt(btnCoordinates[i]);
         }
-        // checking if button is near board side (using classname and textcontent)
-        // first checking angles, then rows, then columns
+        
+        
+        // All buttons without mines checking how many mines around
 
-        // Angles check
-        if (btn.classList.contains('col1') && btn.classList.contains('row1')){
-            for (let a = 0; a < minesList.length; a++){
-                let mine = minesList[a];
-                if (mine.classList.contains('row1') && mine.classList.contains('col2') || mine.classList.contains('row2') && mine.classList.contains('col1') || mine.classList.contains('row2') && mine.classList.contains('col2')){
+        for (let a = 0; a < minesList.length; a++){
+            let mine = minesList[a];
+            if (mine.classList.contains('row' + (btnCoordinates[0]-1))){
+                if (mine.classList.contains('col' + btnCoordinates[1]) || mine.classList.contains('col' + (btnCoordinates[1] - 1)) || mine.classList.contains('col' + (btnCoordinates[1] + 1))){
                     minesNearby = minesNearby + 1;
                     btn.textContent = minesNearby;
                 }
             }
-        }
-        else if (btn.classList.contains('col' + cols) && btn.classList.contains('row' + rows)){
-            for (let a = 0; a < minesList.length; a++){
-                let mine = minesList[a];
-                if (mine.classList.contains('row' + rows) && mine.classList.contains('col' + (cols-1)) || mine.classList.contains('row' + (rows-1)) && mine.classList.contains('col'  + cols) || mine.classList.contains('row' + (rows-1)) && mine.classList.contains('col' + (cols-1))){
+            if (mine.classList.contains('row' + (btnCoordinates[0]+1))){
+                if (mine.classList.contains('col' + btnCoordinates[1]) || mine.classList.contains('col' + (btnCoordinates[1] - 1)) || mine.classList.contains('col' + (btnCoordinates[1] + 1))){
                     minesNearby = minesNearby + 1;
                     btn.textContent = minesNearby;
                 }
             }
-        }
-        else if (btn.classList.contains('col1') && btn.classList.contains('row' + rows)){
-            for (let a = 0; a < minesList.length; a++){
-                let mine = minesList[a];
-                if (mine.classList.contains('row' + rows) && mine.classList.contains('col2') || mine.classList.contains('row' + (rows-1)) && mine.classList.contains('col1') || mine.classList.contains('row' + (rows-1)) && mine.classList.contains('col2')){
+            if (mine.classList.contains('row' + (btnCoordinates[0]))){
+                if (mine.classList.contains('col' + (btnCoordinates[1] - 1)) || mine.classList.contains('col' + (btnCoordinates[1] + 1))){
                     minesNearby = minesNearby + 1;
                     btn.textContent = minesNearby;
-                }
-            }
-        }
-        else if (btn.classList.contains('col' + cols) && btn.classList.contains('row1')){
-            for (let a = 0; a < minesList.length; a++){
-                let mine = minesList[a];
-                if (mine.classList.contains('row1') && mine.classList.contains('col' + (cols-1)) || mine.classList.contains('row2') && mine.classList.contains('col' + (cols-1)) || mine.classList.contains('row2') && mine.classList.contains('col'  + cols)){
-                    minesNearby = minesNearby + 1;
-                    btn.textContent = minesNearby;
-                }
-            }
-        }
-
-        // Rows check
-        else if (btnCoordinates[0] === 1){
-            for (let a = 0; a < minesList.length; a++){
-                let mine = minesList[a];
-                if (mine.classList.contains('row1')){
-                    if(mine.classList.contains('col' + (btnCoordinates[1] - 1)) || mine.classList.contains('col' + (btnCoordinates[1] + 1))){
-                        minesNearby = minesNearby + 1;
-                        btn.textContent = minesNearby;
-                    }
-                }
-                else if (mine.classList.contains('row2')){
-                    if(mine.classList.contains('col' + (btnCoordinates[1] - 1)) || mine.classList.contains('col' + (btnCoordinates[1] + 1)) || mine.classList.contains('col' + (btnCoordinates[1]))){
-                        minesNearby = minesNearby + 1;
-                        btn.textContent = minesNearby;
-                    }
-                }
-            }
-        }
-
-        else if (btnCoordinates[0] === rows){
-            for (let a = 0; a < minesList.length; a++){
-                let mine = minesList[a];
-                if (mine.classList.contains('row' + rows)){
-                    if(mine.classList.contains('col' + (btnCoordinates[1] - 1)) || mine.classList.contains('col' + (btnCoordinates[1] + 1))){
-                        minesNearby = minesNearby + 1;
-                        btn.textContent = minesNearby;
-                    }
-                }
-                else if (mine.classList.contains('row' + (rows-1))){
-                    if(mine.classList.contains('col' + (btnCoordinates[1] - 1)) || mine.classList.contains('col' + (btnCoordinates[1] + 1)) || mine.classList.contains('col' + (btnCoordinates[1]))){
-                        minesNearby = minesNearby + 1;
-                        btn.textContent = minesNearby;
-                    }
-                }
-            }
-        }
-
-        // Columns check
-
-        else if (btnCoordinates[1] === 1){
-            for (let a = 0; a < minesList.length; a++){
-                let mine = minesList[a];
-                if (mine.classList.contains('col1')){
-                    if(mine.classList.contains('row' + (btnCoordinates[0] - 1)) || mine.classList.contains('row' + (btnCoordinates[0] + 1))){
-                        minesNearby = minesNearby + 1;
-                        btn.textContent = minesNearby;
-                    }
-                }
-                else if (mine.classList.contains('col2')){
-                    if(mine.classList.contains('row' + (btnCoordinates[0] - 1)) || mine.classList.contains('row' + (btnCoordinates[0] + 1)) || mine.classList.contains('row' + (btnCoordinates[0]))){
-                        minesNearby = minesNearby + 1;
-                        btn.textContent = minesNearby;
-                    }
-                }
-            }
-        }
-
-        else if (btnCoordinates[1] === cols){
-            for (let a = 0; a < minesList.length; a++){
-                let mine = minesList[a];
-                if (mine.classList.contains('col' + cols)){
-                    if(mine.classList.contains('row' + (btnCoordinates[0] - 1)) || mine.classList.contains('row' + (btnCoordinates[0] + 1))){
-                        minesNearby = minesNearby + 1;
-                        btn.textContent = minesNearby;
-                    }
-                }
-                else if (mine.classList.contains('col' + (cols-1))){
-                    if(mine.classList.contains('row' + (btnCoordinates[0] - 1)) || mine.classList.contains('row' + (btnCoordinates[0] + 1)) || mine.classList.contains('row' + (btnCoordinates[0]))){
-                        minesNearby = minesNearby + 1;
-                        btn.textContent = minesNearby;
-                    }
-                }
-            }
-        }
-
-        // Inner buttons check
-
-        else{
-            for (let a = 0; a < minesList.length; a++){
-                let mine = minesList[a];
-                if (mine.classList.contains('row' + (btnCoordinates[0]-1))){
-                    if (mine.classList.contains('col' + btnCoordinates[1]) || mine.classList.contains('col' + (btnCoordinates[1] - 1)) || mine.classList.contains('col' + (btnCoordinates[1] + 1))){
-                        minesNearby = minesNearby + 1;
-                        btn.textContent = minesNearby;
-                    }
-                }
-                if (mine.classList.contains('row' + (btnCoordinates[0]+1))){
-                    if (mine.classList.contains('col' + btnCoordinates[1]) || mine.classList.contains('col' + (btnCoordinates[1] - 1)) || mine.classList.contains('col' + (btnCoordinates[1] + 1))){
-                        minesNearby = minesNearby + 1;
-                        btn.textContent = minesNearby;
-                    }
-                }
-                if (mine.classList.contains('row' + (btnCoordinates[0]))){
-                    if (mine.classList.contains('col' + (btnCoordinates[1] - 1)) || mine.classList.contains('col' + (btnCoordinates[1] + 1))){
-                        minesNearby = minesNearby + 1;
-                        btn.textContent = minesNearby;
-                    }
                 }
             }
         }
