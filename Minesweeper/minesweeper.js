@@ -4,6 +4,8 @@ const ROWS = 16;
 const COLS = 18;
 const MINES = 15;
 
+// #TODO make button 'try again' and form with rows, cols, mines customising and refresh
+
 function checkBtn(btn){
     if(!btn.opened){
         btn.opened = true
