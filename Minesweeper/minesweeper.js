@@ -1,24 +1,54 @@
 const GAME = document.getElementById('game');
 
-const ROWS = 8;
-const COLS = 8;
-const MINES = 20;
+const ROWS = 16;
+const COLS = 18;
+const MINES = 15;
 
-function checkBtn(btn, oldText){
-    if (oldText != '💣') {
-        btn.textContent = oldText;
+function checkBtn(btn){
+    if(!btn.opened){
+        btn.opened = true
         btn.style.color = '#0f172a';
-        btn.disabled = true;
-        // if (btn.textContent === '0'){
-        //     checkBtn()
-        // }
+        btn.textContent = btn.context;
+        if (btn.context === '💣'){
+            btn.textContent = '💥';
+            console.log('lose');
+            // #TODO add showing all buttons text and disable them
+
+            // #TODO add lose text
+
+            // #TODO add changing textcontent of if under flag wasnt mine then cross
+        }
+        else if (btn.context === 0){
+            let collection = document.getElementsByClassName('btn');
+            let closedbuttons = [...collection];
+            for (let i = 0; i < closedbuttons.length; i++){
+                let checkBtnCoords = closedbuttons[i].coordinates;
+                let btnCoords = btn.coordinates
+                if (btnCoords[0] === (checkBtnCoords[0] - 1)){
+                    if (checkBtnCoords[1] === btnCoords[1] || checkBtnCoords[1] === (btnCoords[1] + 1) || checkBtnCoords[1] === (btnCoords[1] - 1)){
+                        checkBtn(closedbuttons[i])
+                    }
+                }
+                if (btnCoords[0] === (checkBtnCoords[0] + 1)){
+                    if (checkBtnCoords[1] === btnCoords[1] || checkBtnCoords[1] === (btnCoords[1] + 1) || checkBtnCoords[1] === (btnCoords[1] - 1)){
+                        checkBtn(closedbuttons[i])
+                    }
+                }
+                if (btnCoords[0] === checkBtnCoords[0]){
+                    if (checkBtnCoords[1] === (btnCoords[1] + 1) || checkBtnCoords[1] === (btnCoords[1] - 1)){
+                        checkBtn(closedbuttons[i])
+                        
+                    }
+                }
+            }
+            
+        }
+        else{
+            btn.disabled = true;
+        }
     }
-    else{
-        console.log('you losed');
-        btn.textContent = oldText;
-        btn.style.color = '#0f172a';
-        // add showing all buttons text and disable them
-    }
+    
+
 }
 
 function getRandom(min, max){
@@ -36,9 +66,14 @@ function makeBoard (rows, cols, mines, parent){
         row.classList.add('row')
         for (let i = 0; i < cols; i++){
             let btn = document.createElement('button');
+            btn.opened = false;
+            btn.isMine = false;
             btn.classList.add('btn');
-            btn.style.width = '60px';
-            btn.style.height = '60px';
+            
+            let size = (1080 / cols);
+            // #todo rework width and size (make it adaptive)
+            btn.style.width = size + 'px';
+            btn.style.height = size + 'px';
             btn.style.fontSize = '16px';
             btn.coordinates = [a+1, i+1]
             btn.style.border = '1px solid #0f172a';
@@ -48,6 +83,7 @@ function makeBoard (rows, cols, mines, parent){
         }
         board.append(row);
         parent.append(board);
+        
     }
     // filling random buttons with mines
     let minesCount = 0
@@ -55,6 +91,8 @@ function makeBoard (rows, cols, mines, parent){
         let arrayIndex = getRandom(0, rows*cols-1 - minesCount);
         let btn = btnsList[arrayIndex];
         if (btn.textContent != '💣'){
+            btn.context = '💣';
+            btn.isMine = true
             btn.textContent = "💣";
             minesList.push(btn);
             btnsList.splice(arrayIndex, 1);
@@ -76,32 +114,31 @@ function makeBoard (rows, cols, mines, parent){
             if (btnCoords[0] === (mineCoords[0] - 1)){
                 if (mineCoords[1] === btnCoords[1] || mineCoords[1] === (btnCoords[1] + 1) || mineCoords[1] === (btnCoords[1] - 1)){
                     minesNearby = minesNearby + 1;
-                    btn.textContent = minesNearby;
                 }
             }
             if (btnCoords[0] === (mineCoords[0] + 1)){
                 if (mineCoords[1] === btnCoords[1] || mineCoords[1] === (btnCoords[1] + 1) || mineCoords[1] === (btnCoords[1] - 1)){
                     minesNearby = minesNearby + 1;
-                    btn.textContent = minesNearby;
                 }
             }
             if (btnCoords[0] === mineCoords[0]){
                 if (mineCoords[1] === (btnCoords[1] + 1) || mineCoords[1] === (btnCoords[1] - 1)){
                     minesNearby = minesNearby + 1;
-                    btn.textContent = minesNearby;
+                    
                 }
             }
+            btn.context = minesNearby;
+            btn.textContent = minesNearby;
         }
     }
 
-    // Making buttons without text and add opening it
+    // Making buttons without text and add actions on clicks
 
     for(let i = 0; i < allList.length; i++){
-        let oldText = allList[i].textContent;
         allList[i].textContent = '.';
         allList[i].style.color = '#ffffff';
         allList[i].addEventListener('click', function(){
-            checkBtn(allList[i], oldText);
+            checkBtn(allList[i]);
         });
         allList[i].addEventListener('contextmenu', function(ev){
             ev.preventDefault();
@@ -121,4 +158,6 @@ function makeBoard (rows, cols, mines, parent){
 
 
 
-makeBoard(ROWS,COLS,MINES,GAME)
+makeBoard(ROWS,COLS,MINES,GAME);
+
+
