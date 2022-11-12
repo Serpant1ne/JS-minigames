@@ -1,10 +1,92 @@
 const GAME = document.getElementById('game');
 
-const ROWS = 16;
-const COLS = 18;
-const MINES = 15;
+function makeGameStatus(parent){
+    let winText = document.createElement('h3');
+    let loseText = document.createElement('h3');
+    winText.style.color = 'green';
+    loseText.style.color = 'red';
+    winText.textContent = 'You win! 😁';
+    loseText.textContent = 'You lose. 😭';
+    winText.classList.add('display-none');
+    winText.style.textAlign = 'center';
+    winText.id = 'win';
+    loseText.classList.add('display-none');
+    loseText.style.textAlign = 'center';
+    loseText.id = 'lose';
+    parent.append(winText)
+    parent.append(loseText)
+    return [
+        winText,
+        loseText];
+}
 
-// #TODO make button 'try again' and form with rows, cols, mines customising and refresh
+function gameWin(){
+    let el = winText;
+    el.classList.remove('display-none');
+    el.classList.add('inline-block');
+}
+
+function gameLose(){
+    let el = loseText;
+    el.classList.remove('display-none');
+    el.classList.add('inline-block');
+}
+
+function makeForm(parent){
+    let form = document.createElement('div');
+    let rowsDesc = document.createElement('span');
+    let colsDesc = document.createElement('span');
+    let minesDesc = document.createElement('span');
+    let rowsInput = document.createElement('input');
+    let colsInput = document.createElement('input');
+    let minesInput = document.createElement('input');
+    let submitBtn = document.createElement('button');
+    rowsDesc.textContent = 'rows';
+    colsDesc.textContent = 'cols';
+    minesDesc.textContent = 'mines';
+    form.style.padding = '100px';
+    form.style.background = '#ffffff';
+    form.style.borderRadius = '12px';
+    form.style.marginBottom = '50px';
+    form.style.display = 'flex';
+    form.style.flexDirection = 'column';
+    submitBtn.style.width = '150px';
+    submitBtn.style.margin = '0 auto';
+    rowsInput.style.marginBottom = '18px';
+    colsInput.style.marginBottom = '18px';
+    minesInput.style.marginBottom = '18px';
+    submitBtn.width = '100px';
+    submitBtn.height = '100px';
+    submitBtn.textContent = 'Refresh';
+    rowsInput.value = '6';
+    colsInput.value = '6';
+    minesInput.value = '10';
+    form.append(rowsDesc);
+    form.append(rowsInput);
+    form.append(colsDesc);
+    form.append(colsInput);
+    form.append(minesDesc);
+    form.append(minesInput);
+    form.append(submitBtn);
+    parent.append(form);
+    
+
+
+
+    submitBtn.addEventListener('click', function(){
+        let old = document.getElementById('board');
+        old.remove();
+        makeBoard(ROWS,COLS,MINES,GAME);
+    })
+
+    return [
+        MINES = minesInput.value,
+        ROWS = rowsInput.value,
+        COLS = colsInput.value]
+
+
+
+}
 
 function checkBtn(btn){
     if(!btn.opened){
@@ -12,13 +94,32 @@ function checkBtn(btn){
         btn.style.color = '#0f172a';
         btn.textContent = btn.context;
         if (btn.context === '💣'){
-            btn.textContent = '💥';
-            console.log('lose');
+            gameLose();
             // #TODO add showing all buttons text and disable them
 
             // #TODO add lose text
+            // #TODO add Win phase
 
-            // #TODO add changing textcontent of if under flag wasnt mine then cross
+            let collection = document.getElementsByClassName('btn');
+            for (let i = 0; i < collection.length; i++) {
+                const el = collection[i];
+                el.style.color = '#0f172a';
+                if(el.textContent === '🚩' && el.context != '💣'){
+                    el.textContent = '❌';
+                }
+                else if (el.textContent === '🚩' && el.context === '💣'){
+                    el.textContent = '🚩';
+                }
+                else if(el.context === '💣' && el.textContent != '🚩'){
+                    el.textContent = '💣';
+                }
+                else if (el.context != '💣' && el.textContent != '🚩'){
+                    el.textContent = el.context;
+                }
+                el.disabled = true;
+                
+            }
+            btn.textContent = '💥';
         }
         else if (btn.context === 0){
             let collection = document.getElementsByClassName('btn');
@@ -43,11 +144,21 @@ function checkBtn(btn){
                     }
                 }
             }
+            let opened = 0
+            for (let i = 0; i < collection.length; i++) {
+                const el = collection[i];
+                if(el.opened){
+                    opened++;
+                }
+
+                
+            }
+            if(opened === (cols*rows - mines)){
+                gameWin()
+            }
             
         }
-        else{
-            btn.disabled = true;
-        }
+        btn.disabled = true;
     }
     
 
@@ -59,33 +170,34 @@ function getRandom(min, max){
 
 function makeBoard (rows, cols, mines, parent){
     let board = document.createElement('div');
+    board.id = 'board';
     let btnsList = [];
     let allList = [];
     let minesList = [];
     // creating buttons and rows
     for(let a = 0; a < rows; a++){
         let row = document.createElement('div')
-        row.classList.add('row')
+        row.classList.add('row');
+        row.style.width = 'fit-content';
+        row.style.margin = '0 auto';
         for (let i = 0; i < cols; i++){
             let btn = document.createElement('button');
             btn.opened = false;
             btn.isMine = false;
             btn.classList.add('btn');
-            
-            let size = (1080 / cols);
-            // #todo rework width and size (make it adaptive)
+            let size = (540 / cols);
             btn.style.width = size + 'px';
             btn.style.height = size + 'px';
             btn.style.fontSize = '16px';
             btn.coordinates = [a+1, i+1]
             btn.style.border = '1px solid #0f172a';
+            btn.style.background = '#ffffff';
             btnsList.push(btn);
             allList.push(btn);
             row.append(btn);
         }
         board.append(row);
         parent.append(board);
-        
     }
     // filling random buttons with mines
     let minesCount = 0
@@ -155,11 +267,12 @@ function makeBoard (rows, cols, mines, parent){
     }
 
     
-    
+    return board;
 }
 
 
-
+makeForm(GAME);
+makeGameStatus(GAME);
 makeBoard(ROWS,COLS,MINES,GAME);
 
 
