@@ -13,21 +13,18 @@ function makeGameStatus(parent){
     loseText.classList.add('display-none');
     loseText.style.textAlign = 'center';
     loseText.id = 'lose';
-    parent.append(winText)
-    parent.append(loseText)
-    return [
-        winText,
-        loseText];
+    parent.append(winText);
+    parent.append(loseText);
 }
 
 function gameWin(){
-    let el = winText;
+    let el = document.getElementById('win');
     el.classList.remove('display-none');
     el.classList.add('inline-block');
 }
 
 function gameLose(){
-    let el = loseText;
+    let el = document.getElementById('lose');
     el.classList.remove('display-none');
     el.classList.add('inline-block');
 }
@@ -76,7 +73,11 @@ function makeForm(parent){
     submitBtn.addEventListener('click', function(){
         let old = document.getElementById('board');
         old.remove();
-        makeBoard(ROWS,COLS,MINES,GAME);
+        makeBoard(rowsInput.value,colsInput.value,minesInput.value,GAME);
+        return [
+            MINES = minesInput.value,
+            ROWS = rowsInput.value,
+            COLS = colsInput.value]
     })
 
     return [
@@ -95,10 +96,6 @@ function checkBtn(btn){
         btn.textContent = btn.context;
         if (btn.context === '💣'){
             gameLose();
-            // #TODO add showing all buttons text and disable them
-
-            // #TODO add lose text
-            // #TODO add Win phase
 
             let collection = document.getElementsByClassName('btn');
             for (let i = 0; i < collection.length; i++) {
@@ -121,6 +118,7 @@ function checkBtn(btn){
             }
             btn.textContent = '💥';
         }
+        
         else if (btn.context === 0){
             let collection = document.getElementsByClassName('btn');
             let closedbuttons = [...collection];
@@ -144,7 +142,11 @@ function checkBtn(btn){
                     }
                 }
             }
-            let opened = 0
+            
+            
+        }
+        let opened = 0
+        let collection = document.getElementsByClassName('btn');
             for (let i = 0; i < collection.length; i++) {
                 const el = collection[i];
                 if(el.opened){
@@ -153,11 +155,9 @@ function checkBtn(btn){
 
                 
             }
-            if(opened === (cols*rows - mines)){
+            if(opened === (COLS*ROWS - MINES)){
                 gameWin()
             }
-            
-        }
         btn.disabled = true;
     }
     
